@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('SCM checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Beerus-cmd/go-demo-cal.git'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Unit Test'
+                sh 'go test -v'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'go build -v -o scalc -ldflags "-s -w"'
+            }
+        }
+
+        stage('Archive artifats') {
+
+          steps {
+
+          archiveArtifacts artifacts: 'scalc', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
+
+           }
+        }
+    }
+}
